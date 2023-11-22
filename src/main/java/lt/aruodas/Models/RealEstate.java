@@ -26,10 +26,10 @@ public class RealEstate {
     public String email;
 
     public RealEstate(String municipality, String village, String microdistrict, String street, String description, String imageUrl, String youtubeUrl, String virtualTour, String price, String phone, String email) {
-        this.municipality = municipality;
-        this.village = village;
-        this.microdistrict = microdistrict;
-        this.street = street;
+        this.municipality = municipality.toLowerCase();
+        this.village = village.toLowerCase();
+        this.microdistrict = microdistrict.toLowerCase();
+        this.street = street.toLowerCase();
         this.description = description;
         this.imageUrl = imageUrl;
         this.youtubeUrl = youtubeUrl;
@@ -41,6 +41,7 @@ public class RealEstate {
 
     public void fillAd() {
         setLocation();
+
         setDescription();
         uploadImage();
         setYoutubeUrl();
@@ -56,34 +57,67 @@ public class RealEstate {
         rows.get(rows.size() - 4 ).findElement(By.tagName("span")).click();
         rows.get(rows.size() - 5 ).findElement(By.tagName("span")).click();
     }
-    public void setLocation(){
+    public void setRegion(){
+                                                  ////*[@id="newObjectForm"]/ul/li[3]/span[1]/span
         driver.findElement(By.xpath("//*[@id=\"newObjectForm\"]/ul/li[3]/span[1]/span")).click();
-        driver.findElement(By.xpath("//*[@id=\"regionDropdown\"]/li[1]/input")).sendKeys(this.municipality);
-        try {
-            Thread.sleep(900);
-        } catch (InterruptedException e) {
+        List<WebElement> regions = driver.findElement(By.className("dropdown-input-values-address")).findElements(By.tagName("li"));
+        for (WebElement reg: regions  ) {
+            if (reg.getText().toLowerCase().contains(this.municipality)){
+                reg.click();
+                break;
+            }
         }
-        driver.findElement(By.xpath("//*[@id=\"regionDropdown\"]/li[1]/input")).sendKeys(Keys.ENTER);
+    }
+    public void setDistrict(){
+
+        driver.findElement(By.xpath("//*[@id=\"district\"]/span")).click();
+        List<WebElement> regions = driver.findElements(By.className("dropdown-input-values-address")).get(1).findElements(By.tagName("li"));
+        for (WebElement reg: regions  ) {
+            if (reg.getText().toLowerCase().contains(this.village)){
+                reg.click();
+                break;
+            }
+        }
+    }
+    public void setMicroDistrict(){
+        if (driver.findElement(By.id("quartalField")).getAttribute("class").contains("field-disabled")){
+            return;
+        }
 
         driver.findElement(By.xpath("//*[@id=\"quartalField\"]/span[1]/span[2]")).click();
-        driver.findElement(By.xpath("//*[@id=\"quartals_6\"]/li[1]/input")).sendKeys(this.microdistrict);
-        try {
-            Thread.sleep(900);
-        } catch (InterruptedException e) {
+        List<WebElement> regions = driver.findElements(By.className("dropdown-input-values-address")).get(2).findElements(By.tagName("li"));
+        for (WebElement reg: regions  ) {
+            if (reg.getText().toLowerCase().contains(this.microdistrict)){
+                reg.click();
+                break;
+            }
         }
-        driver.findElement(By.xpath("//*[@id=\"quartals_6\"]/li[1]/input")).sendKeys(Keys.ENTER);
+    }
+    public void setStreet(){
 
+        if (driver.findElement(By.id("streetField")).getAttribute("class").equals("field-disabled")){
+            return;
+        }
         driver.findElement(By.xpath("//*[@id=\"streetField\"]/span[1]/span[2]")).click();
-        driver.findElement(By.xpath("//*[@id=\"streets_6\"]/li[1]/input")).sendKeys(this.street);
-        try {
-            Thread.sleep(800);
-        } catch (InterruptedException e) {
+        int drpCount = driver.findElements(By.className("dropdown-input-values-address")).size();
+        List<WebElement> regions = driver.findElements(By.className("dropdown-input-values-address")).get(drpCount - 1).findElements(By.tagName("li"));
+        for (WebElement reg: regions  ) {
+            if (reg.getText().toLowerCase().contains(this.street)){
+                reg.click();
+                break;
+            }
         }
-        driver.findElement(By.xpath("//*[@id=\"streets_6\"]/li[1]/input")).sendKeys(Keys.ENTER);
-        try {
-            Thread.sleep(800);
-        } catch (InterruptedException e) {
-        }
+    }
+    public void setLocation(){
+        setRegion();
+        try {Thread.sleep(1000);} catch (InterruptedException e) {}
+        setDistrict();
+        try {Thread.sleep(1000);} catch (InterruptedException e) {}
+
+        setMicroDistrict();
+        try {Thread.sleep(1000);} catch (InterruptedException e) {}
+
+        setStreet();
     }
     public void setDescription(){
         driver.findElement(By.name("notes_lt")).sendKeys(this.description);
