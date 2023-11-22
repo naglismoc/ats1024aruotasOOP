@@ -15,6 +15,7 @@ public class PlotTests {
     public void aruodasLtPositiveTest() {
         Plot plot = new Plot("Kaunas", "", "Šilainiai", "9-ojo",  "Pigiai nebrangiai nupirksiu jūsų namą", "nameliumbas.jpg", "https://www.youtube.com/watch?v=9xkxT2hY634&pp=ygUTbHV4dXJ5IGhvdXNlIHJldmlldw%3D%3D", "", "2200000", "65214726", "sacebi1448@marksia.com","12","5555-5555-5555","Namų valda, miškų ūkio");
         plot.fillAd();
+
         Assert.assertEquals("", "");
     }
 
